@@ -1,0 +1,19 @@
+# Ignore arquivos e pastas do visual studio
+.vs/
+*.vscode/
+*.user
+*.suo
+*.dbmdl
+*.log
+*.tlog
+*.obj
+*.cache
+*.pdb
+
+# Ignore pastas de build
+bin/
+obj/
+
+# Ignore pacotes do NuGet
+*.nupkg
+packages/
