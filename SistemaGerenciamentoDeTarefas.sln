@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaGerenciamentoDeTarefas", "SistemaGerenciamentoDeTarefas\SistemaGerenciamentoDeTarefas.csproj", "{DB7CE685-73D3-4266-92BB-43036458005C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "AuthService\AuthService.csproj", "{16ECF96E-5A7A-472F-ADA4-66CED73CDB07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksService", "TasksService\TasksService.csproj", "{080083B1-E282-432B-8F26-DBB98B71F3DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DB7CE685-73D3-4266-92BB-43036458005C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB7CE685-73D3-4266-92BB-43036458005C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB7CE685-73D3-4266-92BB-43036458005C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB7CE685-73D3-4266-92BB-43036458005C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16ECF96E-5A7A-472F-ADA4-66CED73CDB07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16ECF96E-5A7A-472F-ADA4-66CED73CDB07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16ECF96E-5A7A-472F-ADA4-66CED73CDB07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16ECF96E-5A7A-472F-ADA4-66CED73CDB07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{080083B1-E282-432B-8F26-DBB98B71F3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{080083B1-E282-432B-8F26-DBB98B71F3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{080083B1-E282-432B-8F26-DBB98B71F3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{080083B1-E282-432B-8F26-DBB98B71F3DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
