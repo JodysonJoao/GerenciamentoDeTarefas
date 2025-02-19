@@ -1,30 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TasksService.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
-[Route("[controller]")]
-public class TaskController : ControllerBase
+[Route("api/[controller]")]
+public class TasksController : ControllerBase
 {
     private readonly TaskDbContext _context;
-    public TaskController(TaskDbContext context)
+    public TasksController(TaskDbContext context)
     {
         _context = context;
     }
 
-    [HttpPost]
-    public IActionResult CreateTask(TasksService.Models.Task task)
+    [HttpPost ("create")]
+    [Authorize]
+    public IActionResult CreateTask([FromBody] TasksService.Models.Task task)
     {
         if (string.IsNullOrWhiteSpace(task.Title))
         {
-            return BadRequest("O titulo da tarefa não pode estar vazio");
+            return BadRequest(new { Message = "O titulo da tarefa não pode estar vazio" });
+        }
+
+        var userName = User.Identity?.Name;
+        if (string.IsNullOrWhiteSpace(userName))
+        {
+            return Unauthorized(new { Message = "Usuário não autenticado" });
         }
 
         try
         {
+            task.CreatedBy = userName;
             _context.Tasks.Add(task);
             _context.SaveChanges();
-            return Ok(new { Message = "Tarefa criada com sucesso" });
+            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
         }
         catch (DbUpdateException ex)
         {
@@ -35,6 +44,7 @@ public class TaskController : ControllerBase
             });
         }
     }
+
 
     [HttpGet]
     public IActionResult GetTasks()
@@ -56,6 +66,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public IActionResult UpdateTask(int id, TasksService.Models.Task task)
     {
         var taskToUpdate = _context.Tasks.Find(id);
@@ -66,6 +77,9 @@ public class TaskController : ControllerBase
         }
 
         taskToUpdate.Status = task.Status;
+        taskToUpdate.Title = task.Title;
+        taskToUpdate.Description = task.Description;
+        taskToUpdate.InitialTime = task.InitialTime;
 
         _context.SaveChanges();
 
@@ -73,6 +87,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public IActionResult DeleteTask(int id)
     {
         var task = _context.Tasks.Find(id);

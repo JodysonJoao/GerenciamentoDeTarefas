@@ -1,53 +1,50 @@
-﻿using AuthService.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using AuthService.Services;
+using GitHubUsers.Services;
+using System.Threading.Tasks;
 
-[ApiController]
-[Route("[controller]")]
-public class UsersController : ControllerBase
+namespace AuthService.Controllers
 {
-    private readonly AuthDbContext _context;
-
-    public UsersController(AuthDbContext context)
+    [Route("api/auth")]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly JwtService _jwtService;
+        private readonly GitHubService _gitHubService;
 
-    [HttpPost]
-    public IActionResult CreateUser(User user)
-    {
-        if (string.IsNullOrWhiteSpace(user.Username))
+        public AuthController(JwtService jwtService, GitHubService gitHubService)
         {
-            return BadRequest("O nome de usuario não pode estar vazio");
+            _jwtService = jwtService;
+            _gitHubService = gitHubService;
         }
 
-        if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            return BadRequest("Email e senha são obrigatorios");
-        }
-
-        try
-        {
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return Ok(new { Message = "Usuario criado com sucesso" });
-        }
-        catch (DbUpdateException ex)
-        {
-            if (ex.InnerException != null && ex.InnerException.Message.Contains("IX_Users_Email"))
+            if (string.IsNullOrEmpty(request.GitHubUsername))
             {
-                return Conflict(new
-                {
-                    Message = "Esse email já está em uso, use outro email"
-                });
+                return BadRequest(new { message = "O campo GitHubUsername é obrigatório." });
+            }
+            var userData = await _gitHubService.GetGitHubName(request.GitHubUsername);
+
+            if (userData == null)
+            {
+                return NotFound(new { message = "Usuário do GitHub não encontrado." });
             }
 
-            return StatusCode(500, new
+            var token = _jwtService.GenerateToken(userData.Login, userData.Name);
+
+            return Ok(new
             {
-                Message = "Ocorreu um erro ao salvar os dados",
-                ErrorDetails = ex.Message
+                Token = token,
+                Name = userData.Name,
+                Username = userData.Login
             });
         }
     }
 
+    public class LoginRequest
+    {
+        public string GitHubUsername { get; set; }
+    }
 }
